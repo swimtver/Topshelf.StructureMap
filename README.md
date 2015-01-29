@@ -34,9 +34,10 @@ class Program
                         JobBuilder.Create<SampleJob>().Build())
                         .AddTrigger(() =>
                             TriggerBuilder.Create()
-                                .WithSimpleSchedule(builder => builder.WithIntervalInSeconds(5)
-                                                                      .RepeatForever())
-                                                                      .Build())
+                                .WithSimpleSchedule(builder => builder
+                                                                .WithIntervalInSeconds(5)
+                                                                .RepeatForever())
+                                                                .Build())
                     );
             });
         });
