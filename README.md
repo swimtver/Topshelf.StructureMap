@@ -4,7 +4,7 @@ You can download packages on NuGet Gallery:
 * [Topshelf.Quartz.StructureMap](https://www.nuget.org/packages/Topshelf.Quartz.StructureMap/)
 
 #Example
-```
+``` c#
 class Program
 {
     static void Main()
@@ -43,7 +43,7 @@ class Program
     }
 }
 ```
-```
+``` c#
 public interface IDependency
 {
     void Write();
@@ -57,7 +57,7 @@ public class Dependency : IDependency
     }
 }
 ```
-```
+``` c#
 internal class SampleService
 {
     private readonly IDependency _dependency;
@@ -81,7 +81,7 @@ internal class SampleService
     }
 }
 ```
-```
+``` c#
 internal class SampleJob:IJob
 {
     private readonly IDependency _dependency;
