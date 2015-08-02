@@ -6,6 +6,7 @@
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
+    <licenseUrl>https://github.com/swimtver/Topshelf.StructureMap/license.txt</licenseUrl>
     <projectUrl>https://github.com/swimtver/Topshelf.StructureMap</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <summary>$description$</summary>

@@ -1,13 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Topshelf.StructureMap", "Topshelf.StructureMap\Topshelf.StructureMap.csproj", "{E9A77BB2-AB70-4CE9-8CD8-9EDC12E2E794}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{AD259265-D424-4C29-B867-D15C852EA9C1}"
 	ProjectSection(SolutionItems) = preProject
-		default.ps1 = default.ps1
+		..\.gitignore = ..\.gitignore
+		..\default.ps1 = ..\default.ps1
+		..\license.txt = ..\license.txt
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Topshelf.Quartz.StructureMap", "Topshelf.Quartz.Structuremap\Topshelf.Quartz.StructureMap.csproj", "{1AE634C3-CEE7-4C35-8BC0-EA5256E6C7BC}"
