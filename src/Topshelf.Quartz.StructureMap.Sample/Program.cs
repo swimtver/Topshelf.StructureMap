@@ -8,31 +8,29 @@ using Topshelf.StructureMap;
 
 namespace Topshelf.Quartz.StructureMap.Sample
 {
-	class Program
-	{
-		static void Main() {
-			HostFactory.Run(c => {
-				var container = new Container(cfg => {
-					cfg.For<IDependency>().Use<Dependency>().AlwaysUnique();
-					cfg.For<IScopeDependency>().Use<ScopeDependency>();
-				});
-				c.UseStructureMap(container);
+    class Program
+    {
+        static void Main() {
+            HostFactory.Run(c => {
+                var container = new Container(cfg => {
+                    cfg.For<IDependency>().Use<Dependency>().AlwaysUnique();
+                    cfg.For<IScopeDependency>().Use<ScopeDependency>();
+                });
+                c.UseStructureMap(container);
 #if SERVICE_CONTROL
 
-				c.Service<SampleServiceControl>(
-					 StructureMapServiceConfiguratorExtensions.GetFactory<SampleServiceControl>()
-					 ,
-					 s => {
-						 //s.ConstructUsingStructureMap();
-						 s.UseQuartzStructureMap()
-							.ScheduleQuartzJob(q =>
-									q.WithJob(() =>
-										JobBuilder.Create<SampleJob>().Build())
-										.AddTrigger(() =>
-											TriggerBuilder.Create()
-												.WithSimpleSchedule(builder => builder.WithIntervalInSeconds(1).WithRepeatCount(25)).Build())
-									);
-					 });
+                c.Service<SampleServiceControl>(
+                     s => {
+                         s.ConstructUsingStructureMap();
+                         s.UseQuartzStructureMap()
+                            .ScheduleQuartzJob(q =>
+                                    q.WithJob(() =>
+                                        JobBuilder.Create<SampleJob>().Build())
+                                        .AddTrigger(() =>
+                                            TriggerBuilder.Create()
+                                                .WithSimpleSchedule(builder => builder.WithIntervalInSeconds(1).WithRepeatCount(25)).Build())
+                                    );
+                     });
 #else
 				c.Service<SampleService>(
 					 s => {
@@ -53,116 +51,110 @@ namespace Topshelf.Quartz.StructureMap.Sample
 								);
 					 });
 #endif
-			});
-		}
-	}
+            });
+        }
+    }
 
-	internal class SampleJob : IJob
-	{
-		private readonly IDependency _first;
-		private readonly IDependency _second;
+    internal class SampleJob : IJob
+    {
+        private readonly IDependency _first;
+        private readonly IDependency _second;
 
-		public SampleJob(IDependency first, IDependency second) {
-			_first = first;
-			_second = second;
-		}
+        public SampleJob(IDependency first, IDependency second) {
+            _first = first;
+            _second = second;
+        }
 
-		public void Execute(IJobExecutionContext context) {
-			Console.WriteLine("{0} - Sample job executing...", DateTime.Now);
-			Console.WriteLine("Dependencies are {0} equal.", _first.Equals(_second) ? "" : "not");
-			Thread.Sleep(2000);
-			Console.WriteLine("First dependency is acting.");
-			_first.Write();
-			Console.WriteLine("Second dependency is acting.");
-			_second.Write();
-			Console.WriteLine("Sample job executed.");
-		}
-	}
+        public void Execute(IJobExecutionContext context) {
+            Console.WriteLine($"{DateTime.Now} - Sample job({_first.Dep.Id}) executing...");
+            Console.WriteLine("Scope Dependencies are {0} equal.", _first.Dep.Equals(_second.Dep) ? "" : "not");
+            Thread.Sleep(2000);
+            Console.WriteLine($"Sample job({_first.Dep.Id}) executed.");
+        }
+    }
 
 
-	public interface IScopeDependency
-	{
-		Guid Id { get; }
-	}
+    public interface IScopeDependency
+    {
+        Guid Id { get; }
+    }
 
-	public class ScopeDependency : IScopeDependency, IDisposable
-	{
-		private readonly Guid _corelationGuid;
+    public class ScopeDependency : IScopeDependency, IDisposable
+    {
+        private readonly Guid _corelationGuid;
 
-		public ScopeDependency() {
-			_corelationGuid = Guid.NewGuid();
-		}
+        public ScopeDependency() {
+            _corelationGuid = Guid.NewGuid();
+        }
 
-		public Guid Id {
-			get { return _corelationGuid; }
-		}
+        public Guid Id {
+            get { return _corelationGuid; }
+        }
 
-		public void Dispose() {
-			Console.WriteLine("----------------------------------");
-			Console.WriteLine("{0} was disposed.", _corelationGuid);
-			Console.WriteLine("----------------------------------");
-		}
-	}
+        public void Dispose() {
+            Console.WriteLine("{0} was disposed.", _corelationGuid);
+        }
+    }
 
-	public interface IDependency
-	{
-		void Write();
-	}
+    public interface IDependency
+    {
+        void Write();
+        IScopeDependency Dep { get; }
+    }
 
-	public class Dependency : IDependency
-	{
-		private readonly IScopeDependency _dependency;
+    public class Dependency : IDependency
+    {
+        public Dependency(IScopeDependency dependency) {
+            Dep = dependency;
+        }
 
-		public Dependency(IScopeDependency dependency) {
-			_dependency = dependency;
-		}
+        public IScopeDependency Dep { get; }
+        public void Write() {
+            Console.WriteLine("Line from dependency. ScopeId = {0}", Dep.Id);
+        }
+    }
 
-		public void Write() {
+    internal class SampleService
+    {
+        private readonly IDependency _dependency;
 
-			Console.WriteLine("Line from dependency. ScopeId = {0}", _dependency.Id);
-		}
-	}
+        public SampleService(IDependency dependency) {
+            _dependency = dependency;
+        }
 
-	internal class SampleService
-	{
-		private readonly IDependency _dependency;
+        public bool Start() {
+            Console.WriteLine("--------------------------------");
+            Console.WriteLine("Sample Service Started...");
+            _dependency.Write();
+            Console.WriteLine("--------------------------------");
 
-		public SampleService(IDependency dependency) {
-			_dependency = dependency;
-		}
+            return true;
+        }
 
-		public bool Start() {
-			Console.WriteLine("--------------------------------");
-			Console.WriteLine("Sample Service Started...");
-			_dependency.Write();
-			Console.WriteLine("--------------------------------");
+        public bool Stop() {
+            return true;
+        }
+    }
 
-			return true;
-		}
+    internal class SampleServiceControl : ServiceControl
+    {
+        private readonly IDependency _dependency;
 
-		public bool Stop() {
-			return true;
-		}
-	}
+        public SampleServiceControl(IDependency dependency) {
+            _dependency = dependency;
+        }
 
-	internal class SampleServiceControl : ServiceControl
-	{
-		private readonly IDependency _dependency;
+        public bool Start(HostControl hostControl) {
+            Console.WriteLine("--------------------------------");
+            Console.WriteLine("Sample Service Started...");
+            _dependency.Write();
+            Console.WriteLine("--------------------------------");
 
-		public SampleServiceControl(IDependency dependency) {
-			_dependency = dependency;
-		}
+            return true;
+        }
 
-		public bool Start(HostControl hostControl) {
-			Console.WriteLine("--------------------------------");
-			Console.WriteLine("Sample Service Started...");
-			Console.WriteLine("--------------------------------");
-
-			return true;
-		}
-
-		public bool Stop(HostControl hostControl) {
-			return true;
-		}
-	}
+        public bool Stop(HostControl hostControl) {
+            return true;
+        }
+    }
 }

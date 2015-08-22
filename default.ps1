@@ -1,5 +1,6 @@
+Framework "4.6"
 properties {
-	$BaseDir = Resolve-Path ".\"
+	$BaseDir = Resolve-Path ".\src"
 	$SolutionFile = "$BaseDir\Topshelf.StructureMap.sln"
 	$OutputDir1 = "$BaseDir\Topshelf.StructureMap\bin"	
 	$OutputDir2 = "$BaseDir\Topshelf.Quartz.Structuremap\bin"
@@ -22,7 +23,7 @@ task Clean -depends Init {
 }
 
 task RestorePackages {
-	nuget restore $solutionName
+	nuget restore $solutionFile
 }
 
 task Build -depends Init,Clean,RestorePackages {
@@ -31,9 +32,9 @@ task Build -depends Init,Clean,RestorePackages {
 
 task Publish -depends Build {
     exec {
-        nuget pack Topshelf.StructureMap\Topshelf.StructureMap.csproj -OutputDirectory $OutputDir1 -Symbols -Prop Configuration=$Configuration        
+        nuget pack "$BaseDir\Topshelf.StructureMap\Topshelf.StructureMap.csproj" -OutputDirectory $OutputDir1 -Symbols -Prop Configuration=$Configuration        
     }
 	 exec {
-        nuget pack Topshelf.Quartz.Structuremap\Topshelf.Quartz.StructureMap.csproj -OutputDirectory $OutputDir2 -Symbols -Prop Configuration=$Configuration        
+        nuget pack "$BaseDir\Topshelf.Quartz.Structuremap\Topshelf.Quartz.StructureMap.csproj" -OutputDirectory $OutputDir2 -Symbols -Prop Configuration=$Configuration        
     }     
 }

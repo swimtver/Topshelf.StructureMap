@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Topshelf.Quartz.StructureMap</id>
-    <version>0.4.0.0</version>
+    <version>0.5.0.0</version>
     <title>$title$</title>
     <authors>$author$</authors>
     <owners>$author$</owners>
@@ -14,7 +14,7 @@
     <copyright>Copyright $author$ 2015</copyright>
     <tags>Topshelf Quartz.NET structuremap</tags>
     <dependencies>
-      <dependency id="Topshelf.StructureMap" version="0.2.0.0" />
+      <dependency id="Topshelf.StructureMap" version="0.3.0.0" />
       <dependency id="Quartz" version="2.3.3" />
     </dependencies>
   </metadata>
