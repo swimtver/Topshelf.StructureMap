@@ -1,5 +1,4 @@
 ﻿using StructureMap;
-using StructureMap.Configuration.DSL;
 using Topshelf.HostConfigurators;
 
 namespace Topshelf.StructureMap

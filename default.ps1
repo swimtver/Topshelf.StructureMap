@@ -30,7 +30,7 @@ task Build -depends Init,Clean,RestorePackages {
     exec { msbuild $SolutionFile /t:Rebuild /p:Configuration=$Configuration /m }
 }
 
-task Publish -depends Build {
+task Publish {
     exec {
         nuget pack "$BaseDir\Topshelf.StructureMap\Topshelf.StructureMap.csproj" -OutputDirectory $OutputDir1 -Symbols -Prop Configuration=$Configuration        
     }
