@@ -23,18 +23,18 @@ task Clean -depends Init {
 }
 
 task RestorePackages {
-	nuget restore $solutionFile
+	exec { dotnet restore $solutionFile }
 }
 
 task Build -depends Init,Clean,RestorePackages {
-    exec { msbuild $SolutionFile /t:Rebuild /p:Configuration=$Configuration /m }
+    exec { dotnet build $SolutionFile --configuration $Configuration --no-restore --no-incremental }
 }
 
-task Publish {
+task Publish -depends Build {
     exec {
-        nuget pack "$BaseDir\Topshelf.StructureMap\Topshelf.StructureMap.csproj" -OutputDirectory $OutputDir1 -Symbols -Prop Configuration=$Configuration        
+        dotnet pack "$BaseDir\Topshelf.StructureMap\Topshelf.StructureMap.csproj" -o $OutputDir1 --no-build --include-symbols -c $Configuration
     }
 	 exec {
-        nuget pack "$BaseDir\Topshelf.Quartz.Structuremap\Topshelf.Quartz.StructureMap.csproj" -OutputDirectory $OutputDir2 -Symbols -Prop Configuration=$Configuration        
+        dotnet pack "$BaseDir\Topshelf.Quartz.StructureMap\Topshelf.Quartz.StructureMap.csproj" -o $OutputDir2 --no-build --include-symbols -c $Configuration
     }     
 }
