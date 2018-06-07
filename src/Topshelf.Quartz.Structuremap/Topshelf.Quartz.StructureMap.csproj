@@ -5,7 +5,7 @@
     <Copyright>Copyright © Europlan 2018</Copyright>
     <PackageId>Topshelf.Quartz.StructureMap</PackageId>
     <Description>StructureMap integration with Topshelf and Quartz</Description>
-    <VersionPrefix>0.7.0</VersionPrefix>
+    <VersionPrefix>0.7.1</VersionPrefix>
     
     <TargetFramework>net452</TargetFramework>
     <RepositoryType>git</RepositoryType>
@@ -14,7 +14,7 @@
     <PackageLicenseUrl>https://github.com/swimtver/Topshelf.StructureMap/blob/master/license.txt</PackageLicenseUrl>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Quartz" Version="3.0.0" />
+    <PackageReference Include="Quartz" Version="[3,4)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Topshelf.StructureMap\Topshelf.StructureMap.csproj" />
